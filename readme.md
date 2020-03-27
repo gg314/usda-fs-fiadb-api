@@ -11,7 +11,20 @@ List of population estimates
 > https://www.fia.fs.fed.us/library/database-documentation/
 Documentation PDFs, including information at the table level
 
-## Example
+## fullReport Example
+
+## evalgrp Example
+
+## statecdLonLatRad Example
+> https://apps.fs.usda.gov/Evalidator/rest/Evalidator/statecdLonLatRad?lon=-93&lat=45&rad=600&schemaName=FS_FIA_SPATIAL
+
+Note the FIADB table returns some codes as strings and others as numbers.
+```python
+print("State codes within 100mi of Minneapolis, MN: " + str(client.statecdLonLatRad.get(lat=45, lon=93, rad=100)) + "\r\n")
+> "State codes within 100mi of Duluth, MN: [55, 27]"
+```
+
+## refTable Example
 > https://apps.fs.usda.gov/Evalidator/rest/Evalidator/refTable?colList=common_name,%20genus,%20species&tableName=REF_SPECIES&whereStr=upper(common_name)%20like%20%27%%%27&outputFormat=HTML
 A list of all species in the database.
 

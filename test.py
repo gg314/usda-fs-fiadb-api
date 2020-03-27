@@ -11,3 +11,7 @@ print("Found %d species of walnut: " % len(walnuts) + "\r\n".join(["%s | *%s %s*
 print("Columns in `TREE`: " + ", ".join(client.refTable.columns(tableName="TREE")) + "\r\n")
 
 print("Columns in `REF_SPECIES`: " + ", ".join(client.refTable.columns(tableName="REF_SPECIES")) + "\r\n")
+
+
+
+print("State codes within 100mi of Minneapolis, MN: " + str(client.statecdLonLatRad.get(lat=45, lon=93, rad=100)) + "\r\n")

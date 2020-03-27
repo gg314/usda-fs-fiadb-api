@@ -43,6 +43,49 @@ class FIADBfullreport(Client):
 
 
 
+class FIADBstatecdLonLatRad(Client):
+
+    def __init__(self, session=None):
+        Client.__init__(self)
+        self.endpoint_url = 'https://apps.fs.usda.gov/Evalidator/rest/Evalidator/statecdLonLatRad'
+
+
+    def get(self, **kwargs):
+        return (self.query(**kwargs))
+
+
+    def query(self, lon, lat, rad=0, **kwargs):
+
+        url = self.endpoint_url
+
+        params = {
+            'lon': -abs(lon), # NAD83
+            'lat': lat,       # NAD83; Note: all longitude values should be negative
+            'rad': rad,
+            'schemaName': "FS_FIA_SPATIAL"
+        }
+
+        resp = self.session.get(url, params=params)
+        # print(resp.url) # For troubleshooting
+
+        if resp.status_code == 200:
+            try:
+                data = resp.json()
+            except ValueError as ex:
+                raise ex
+
+            if data['listOfStatecds'] == "":
+                return ["Empty stateLonLatRad query results"]
+            return data['listOfStatecds']['statecd']
+
+        elif resp.status_code == 204:
+            return []
+
+        else:
+            raise APIException("An error occured.")
+
+
+
 class FIADBrefTable(Client):
 
     def __init__(self, session=None):
@@ -129,5 +172,6 @@ class FIADB(object):
 
       # self.evalgrp = FIADBevalgrp(session)
         self.fullreport = FIADBfullreport(session)
+        self.statecdLonLatRad = FIADBstatecdLonLatRad(session)
         self.refTable = FIADBrefTable(session)
 
