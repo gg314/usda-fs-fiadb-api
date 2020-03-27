@@ -25,10 +25,6 @@ client = FIADB(verbose = True) # print HTTP request urls for each query
 
 Valid fullReport queries can be very difficult to write and parse without testing first on the USDA's Java-based [Evalidator](https://apps.fs.usda.gov/Evalidator/evalidator.jsp).
 
-[Web example: Get all species in Wisconsin grouped by county](<https://apps.fs.usda.gov/Evalidator/rest/Evalidator/fullreport?reptype=State&lat=0&lon=0&radius=0&snum=Number%20of%20live%20trees%20(at%20least%201%20inch%20d.b.h./d.r.c.),%20in%20trees,%20on%20forest%20land&sdenom=No%20denominator%20-%20just%20produce%20estimates&wc=552018&pselected=Species%20group&rselected=County%20code%20and%20name&cselected=All%20live%20stocking&ptime=Current&rtime=Current&ctime=Current&wf=&wnum=&wnumdenom=&FIAorRPA=FIADEF&outputFormat=HTML&estOnly=Y&schemaName=FS_FIADB.>)
-
-[Web example: Get acres per country](https://apps.fs.usda.gov/Evalidator/rest/Evalidator/fullreport?reptype=State&lat=0&lon=0&radius=0&snum=Area%20of%20sampled%20land%20and%20water,%20in%20acres&sdenom=No%20denominator%20-%20just%20produce%20estimates&wc=552018&pselected=None&rselected=County%20code%20and%20name&cselected=EVALID&ptime=Current&rtime=Current&ctime=Current&wf=&wnum=&wnumdenom=&FIAorRPA=FIADEF&outputFormat=HTML&estOnly=Y&schemaName=FS_FIADB.)
-
 ```python
 # Find total number of softwood and hardwood trees by Wisconsin county
 trees = client.fullreport.get(
@@ -38,7 +34,7 @@ trees = client.fullreport.get(
     pselected="None",
     rselected="County code and name",
     cselected="Species group - Major"
-)
+)["row]
 ```
 
 ### evalgrp Example
@@ -56,9 +52,6 @@ client.statecdlonlatrad.get(lat=45, lon=93, rad=100)
 ```
 
 ### reftable Example
-
-[Web Example: A list of all species in the database.](<https://apps.fs.usda.gov/Evalidator/rest/Evalidator/refTable?colList=common_name,%20genus,%20species&tableName=REF_SPECIES&whereStr=upper(common_name)%20like%20%27%%%27&outputFormat=HTML>)
-
 ```python
 # List all unique entries with "walnut" in the common name
 walnuts = client.reftable.get(
