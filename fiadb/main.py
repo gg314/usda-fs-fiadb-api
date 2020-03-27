@@ -51,7 +51,7 @@ class FIADBevalgrp(Client):
         self.available_cols = FIADBrefTable().columns(tableName="POP_EVAL_GRP")
 
     def get(self, whereClause="", mostRecent="Y", **kwargs):
-        return (self.query(**kwargs))
+        return (self.query(whereClause, mostRecent, **kwargs))
 
     def query(self, whereClause="", mostRecent="Y", **kwargs):
 
@@ -64,7 +64,7 @@ class FIADBevalgrp(Client):
         }
 
         resp = self.session.get(url, params=params)
-        # print(resp.url) # For troubleshooting
+        print(resp.url) # For troubleshooting
 
         if resp.status_code == 200:
             try:
@@ -92,7 +92,7 @@ class FIADBstatecdLonLatRad(Client):
 
 
     def get(self, lon, lat, rad=0, **kwargs):
-        return (self.query(**kwargs))
+        return (self.query(lon, lat, rad, **kwargs))
 
 
     def query(self, lon, lat, rad=0, **kwargs):
