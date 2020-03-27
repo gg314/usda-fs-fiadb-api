@@ -5,7 +5,7 @@ from fiadb import FIADB
 client = FIADB()
 
 
-test = client.refTable.get("POP_")
+test = client.reftable.get("POP_")
 print(test)
 quit()
 
@@ -32,42 +32,44 @@ trees = client.fullreport.get(
 )
 trees = trees["row"]
 
-treeCountsByCounty = {}
+tree_counts_by_county = {}
 for c in trees:
-    treeCountsByCounty[c["content"]] = (
+    tree_counts_by_county[c["content"]] = (
         int(c["column"][0]["cellValueNumerator"]),
         int(c["column"][1]["cellValueNumerator"]),
         int(c["column"][2]["cellValueNumerator"]),
     )
 
-areaByCounty = {}
+acres_by_county = {}
 for z in areas:
-    areaByCounty[z["content"]] = int(z["column"][0]["cellValueNumerator"])
+    acres_by_county[z["content"]] = int(z["column"][0]["cellValueNumerator"])
 
-densityByCounty = {}
-for county in areaByCounty.keys():
+tree_density_by_county = {}
+for county in acres_by_county.keys():
     try:
         fips = int(county[2:5])
     except:
         fips = -1
 
     if fips > 0:
-        densityByCounty[fips] = (
-            int(treeCountsByCounty[county][0] / areaByCounty[county]),
-            int(treeCountsByCounty[county][1] / areaByCounty[county]),
-            int(treeCountsByCounty[county][2] / areaByCounty[county]),
+        tree_density_by_county[fips] = (
+            int(tree_counts_by_county[county][0] / acres_by_county[county]),
+            int(tree_counts_by_county[county][1] / acres_by_county[county]),
+            int(tree_counts_by_county[county][2] / acres_by_county[county]),
         )
 
 
-for k in densityByCounty:
+for k in tree_density_by_county:
     print(
         "%s, %d, %d, %d"
-        % (k, densityByCounty[k][0], densityByCounty[k][1], densityByCounty[k][2])
+        % (
+            k,
+            tree_density_by_county[k][0],
+            tree_density_by_county[k][1],
+            tree_density_by_county[k][2],
+        )
     )
 
-
-# results = client.refTable.get(tableName="POP_EVAL_GRP", colList="eval_grp, eval_grp_descr")
-# print("\r\n".join([ "%s (%s)" % (r['EVAL_GRP'], r['EVAL_GRP_DESCR']) for r in results ]))
 
 quit()
 
@@ -80,12 +82,11 @@ print(
 quit()
 
 
-
 quit()
 
-print("Found " + str(len(client.refTable.tables())) + " available FIADB tables.\r\n")
+print("Found " + str(len(client.reftable.tables())) + " available FIADB tables.\r\n")
 
-walnuts = client.refTable.get(
+walnuts = client.reftable.get(
     tableName="REF_SPECIES",
     colList="common_name, genus, species",
     whereStr="upper(common_name) LIKE '%WALNUT%'\r\n",
@@ -100,18 +101,18 @@ print(
 
 print(
     "Columns in `TREE`: "
-    + ", ".join(client.refTable.columns(tableName="TREE"))
+    + ", ".join(client.reftable.columns(tableName="TREE"))
     + "\r\n"
 )
 
 print(
     "Columns in `POP_EVAL_GRP`: "
-    + ", ".join(client.refTable.columns(tableName="POP_EVAL_GRP"))
+    + ", ".join(client.reftable.columns(tableName="POP_EVAL_GRP"))
     + "\r\n"
 )
 
 print(
     "State codes within 100mi of Minneapolis, MN: "
-    + str(client.statecdLonLatRad.get(lat=45, lon=93, rad=100))
+    + str(client.statecdlonlatrad.get(lat=45, lon=93, rad=100))
     + "\r\n"
 )
