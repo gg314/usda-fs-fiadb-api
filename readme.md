@@ -36,6 +36,7 @@ trees = client.fullreport.get(
     cselected="Species group - Major"
 )["row]
 ```
+See the visual examples at the bottom of this guide, which were created with data taken from `fullreport` queries.
 
 ### evalgrp Example
 ```python
@@ -73,3 +74,15 @@ walnuts = client.reftable.get(
 | southern California black walnut | _Juglans californica_ |
 | Texas walnut                     | _Juglans microcarpa_  |
 | Arizona walnut                   | _Juglans major_       |
+
+
+## Docs
+Choropleths (county-level colored maps) are easy to create using a utility like plotly (which has a Python implementation).
+
+```
+> pip install plotly
+> pip install psutil requests ipywidgets
+# install orca according to https://github.com/plotly/orca
+```
+
+<img src="./docs/hardwoods-vs-softwoods-in-wi.png" alt="" />
