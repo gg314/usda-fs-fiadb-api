@@ -1,15 +1,11 @@
 ## Documentation & Links
-> https://apps.fs.usda.gov/fia/datamart/images/datamart_api_tutorials.html
-General documentation
+[General FIADB API "documentation"](https://apps.fs.usda.gov/fia/datamart/images/datamart_api_tutorials.html)
 
-> https://apps.fs.usda.gov/fia/datamart/images/Evalidator_variable_library.html
-List of variables
+[List of `fullReport` variables](https://apps.fs.usda.gov/fia/datamart/images/Evalidator_variable_library.html)
 
-> https://apps.fs.usda.gov/fia/datamart/images/Evalidator_pop_estimates.html
-List of population estimates
+[List of `fullReport` population estimates](https://apps.fs.usda.gov/fia/datamart/images/Evalidator_pop_estimates.html)
 
-> https://www.fia.fs.fed.us/library/database-documentation/
-Documentation PDFs, including information at the table level
+[Documentation PDFs, including information at the table level](https://www.fia.fs.fed.us/library/database-documentation/)
 
 ## fullReport Example
 
