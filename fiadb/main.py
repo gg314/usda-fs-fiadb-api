@@ -7,6 +7,13 @@ def new_session(*args, **kwargs):
     return requests.session(*args, **kwargs)
 
 
+def test_param(param, set):
+    if param in set:
+        return param
+    else:
+        print('o no')
+        raise APIException("API Input Error: '" + str(param) + "' should be one of " + str(set))
+
 class APIKeyError(Exception):
     """ Invalid API key
     """
@@ -33,13 +40,83 @@ class FIADBfullreport(Client):
 
     def __init__(self, session=None):
         Client.__init__(self)
-        self.endpoint_url = 'https://apps.fs.usda.gov/Evalidator/rest/Evalidator/refTable'
+        self.endpoint_url = 'https://apps.fs.usda.gov/Evalidator/rest/Evalidator/fullreport'
 
     def tables(self, *args, **kwargs):
         return "TODO"
 
-    def get(self, *args, **kwargs):
-        return "TODO"
+    def get(self, **kwargs):
+        return (self.query(**kwargs))
+
+    def query(self,
+              reptype="State",
+              lat=0,
+              lon=0,
+              radius=0,
+              snum="",
+              sdenom="No denominator - just produce estimates",
+              wc="",
+              pselected="",
+              rselected="",
+              cselected="",
+              ptime="Current",
+              rtime="Current",
+              ctime="Current",
+              wf="",
+              wnum="",
+              wnumdenom="",
+              FIAorRPA="FIADEF",
+              estOnly="Y",
+              r1="",
+              c1="",
+              **kwargs):
+
+        url = self.endpoint_url
+        time_opts = ["Accounting", "Previous", "Current", "Previous if available else current", "Current if available else previous"]
+        params = {
+            'reptype': test_param(reptype, ["Circle", "State"]),
+            'lat': lat,       # NAD83; Note: all longitude values should be negative
+            'lon': lon, # NAD83
+            'radius': radius, # if using repType="Circle", in [miles]
+            'snum': snum,       # See values of attribute_descr variable in evalidator_pop_est_1_6_1FIADB table
+            'sdenom': sdenom, # If not performing a ratio estimate then enter “No denominator -just produce estimate.“ For ratio estimates see values of attribute_descr  variable in evalidator_pop_est_1_6_1FIADB table.
+            'wc': wc,         # which dataset? see values of eval_grp variable in pop_eval_grp FIADB table. When more than one evaluation group is selected the evaluation group numbers should be separated by a comma. Or use evalGrp API to find group by state.
+            'pselected': pselected, # See values of label_var variable in variable_library table where page_list='Y'.
+            'rselected': rselected, # See values of label_var variable in variable_library table where row_list='Y'.
+            'cselected': cselected, # See values of label_var variable in variable_library table where col_list='Y'
+            'ptime': test_param(ptime, time_opts),
+            'rtime': test_param(rtime, time_opts),
+            'ctime': test_param(ctime, time_opts),
+            'wf': wf,                # SQL clause filter used for non-ratio estimates
+            'wnum': wnum,            # SQL clause filter, applied only to numerator in a ratio estimate
+            'wnumdenom': wnumdenom,  # SQL clause filter, applied to numerator and denominator in ratio estimate
+            'FIAorRPA': test_param(FIAorRPA, ["FIADEF", "RPADEF"]),
+            'outputFormat': "JSON",
+            'estOnly': test_param(estOnly, ["Y", "N"]),
+            'schemaName': "FS_FIADB.",
+            'r1': r1,
+            'c1': c1,
+        }
+
+        resp = self.session.get(url, params=params)
+        print(resp.url) # For troubleshooting
+
+        if resp.status_code == 200:
+            try:
+                data = resp.json()
+            except ValueError as ex:
+                raise ex
+
+            if data['EVALIDatorOutput'] == "":
+               return ["Empty evalGrp query results"]
+            return data['EVALIDatorOutput']
+
+        elif resp.status_code == 204:
+            return []
+
+        else:
+            raise APIException("An error occured.")
+
 
 
 class FIADBevalgrp(Client):
@@ -59,8 +136,8 @@ class FIADBevalgrp(Client):
 
         params = {
             'schemaName': "FS_FIADB",
-            'whereClause': whereClause, # Usually blank but user can use any fields in the `POP_EVAL_GRP` table to limit the number of rows
-            'mostRecent': mostRecent,   # If "Y" then only the most recent inventories (based on `DATAMART_MOST_RECENT_INV`) will be returned
+            'whereClause': whereClause, # "Usually blank but can use any fields in the `POP_EVAL_GRP` table to limit the number of rows"
+            'mostRecent': test_param(mostRecent, ["Y", "N"]),   # If "Y" then only the most recent inventories (based on `DATAMART_MOST_RECENT_INV`) will be returned
         }
 
         resp = self.session.get(url, params=params)
@@ -80,7 +157,7 @@ class FIADBevalgrp(Client):
             return []
 
         else:
-            raise APIException("An error occured.")
+            raise APIException("An error occured. For a list of available POP_EVAL_GRP fields to use in whereClause, evaluate `self.evalgrp.available_cols`")
 
 
 
