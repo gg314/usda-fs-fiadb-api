@@ -42,6 +42,47 @@ class FIADBfullreport(Client):
         return "TODO"
 
 
+class FIADBevalgrp(Client):
+    """ To identify which evaluation groups are in the database """
+
+    def __init__(self, session=None):
+        Client.__init__(self)
+        self.endpoint_url = 'https://apps.fs.usda.gov/Evalidator/rest/Evalidator/evalgrp'
+        self.available_cols = FIADBrefTable().columns(tableName="POP_EVAL_GRP")
+
+    def get(self, whereClause="", mostRecent="Y", **kwargs):
+        return (self.query(**kwargs))
+
+    def query(self, whereClause="", mostRecent="Y", **kwargs):
+
+        url = self.endpoint_url
+
+        params = {
+            'schemaName': "FS_FIADB",
+            'whereClause': whereClause, # Usually blank but user can use any fields in the `POP_EVAL_GRP` table to limit the number of rows
+            'mostRecent': mostRecent,   # If "Y" then only the most recent inventories (based on `DATAMART_MOST_RECENT_INV`) will be returned
+        }
+
+        resp = self.session.get(url, params=params)
+        # print(resp.url) # For troubleshooting
+
+        if resp.status_code == 200:
+            try:
+                data = resp.json()
+            except ValueError as ex:
+                raise ex
+
+            if data['listOfEvalGroups'] == "":
+                return ["Empty evalGrp query results"]
+            return data['listOfEvalGroups']['evalGrp']
+
+        elif resp.status_code == 204:
+            return []
+
+        else:
+            raise APIException("An error occured.")
+
+
 
 class FIADBstatecdLonLatRad(Client):
 
@@ -50,7 +91,7 @@ class FIADBstatecdLonLatRad(Client):
         self.endpoint_url = 'https://apps.fs.usda.gov/Evalidator/rest/Evalidator/statecdLonLatRad'
 
 
-    def get(self, **kwargs):
+    def get(self, lon, lat, rad=0, **kwargs):
         return (self.query(**kwargs))
 
 
@@ -170,8 +211,8 @@ class FIADB(object):
             'User-Agent': ('python-usda-fs-fiadb')
         })
 
-      # self.evalgrp = FIADBevalgrp(session)
         self.fullreport = FIADBfullreport(session)
         self.statecdLonLatRad = FIADBstatecdLonLatRad(session)
         self.refTable = FIADBrefTable(session)
+        self.evalgrp = FIADBevalgrp(session)
 

@@ -15,6 +15,13 @@ Documentation PDFs, including information at the table level
 
 ## evalgrp Example
 
+
+```python
+# Most recent evalGrps for Minnesota, Wisconsin
+client.evalgrp.get(whereClause="STATECD IN (55, 27)")
+> [272018, 552018]
+```
+
 ## statecdLonLatRad Example
 > https://apps.fs.usda.gov/Evalidator/rest/Evalidator/statecdLonLatRad?lon=-93&lat=45&rad=600&schemaName=FS_FIA_SPATIAL
 
