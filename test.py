@@ -2,11 +2,16 @@ from fiadb import FIADB
 
 # from us import states # future: fips
 
-client = FIADB()
+client = FIADB(verbose=False)
 
 
-test = client.reftable.get("POP_")
-print(test)
+# State codes within 100mi of Minneapolis, MN
+states_near_MN = (client.statecdlonlatrad.get(lat=45, lon=-93.0, rad=100))
+print(states_near_MN)
+
+latest_MN_WI_data = client.evalgrp.get(whereClause="STATECD IN (55, 27)")
+print(latest_MN_WI_data)
+
 quit()
 
 # results = client.fullreport.get(reptype="Circle", lat="45", lon="-93", radius="50", snum="Area of forest land, in acres", sdenom="No denominator - just produce estimates", wc=272018, pselected="None", rselected="Stand-size class", cselected="Ownership group - Major")

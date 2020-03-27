@@ -34,14 +34,15 @@ class APIException(Exception):
 
 
 class Client(object):
-    def __init__(self, session=None, retries=3):
+    def __init__(self, session=None, verbose=False, retries=3):
         self.session = session or new_session()
         self.retries = retries
+        self.verbose = verbose
 
 
 class FIADBfullreport(Client):
-    def __init__(self, session=None):
-        Client.__init__(self)
+    def __init__(self, session=None, verbose=False):
+        Client.__init__(self, session, verbose)
         self.endpoint_url = (
             "https://apps.fs.usda.gov/Evalidator/rest/Evalidator/fullreport"
         )
@@ -88,21 +89,11 @@ class FIADBfullreport(Client):
     def list_vars(self, type="*", *args, **kwargs):
         """ 
         return a list of () (used in fullReport's pselected, rselected, cselected).
-        sorted by earliest to latest, for some reason.
+        sorted by earliest to latest, for some reason. TODO: find a table that contains these!
         """
-        try:
-            all_vars = self.variables
-        except AttributeError:
-            query = FIADBreftable().get(
-                tableName="POP_EVAL_GRP", colList="EVAL_GRP, EVAL_GRP_DESCR, STATECD"
-            )
-            self.variables = sorted(
-                [(p["EVAL_GRP"], p["EVAL_GRP_DESCR"], p["STATECD"]) for p in query],
-                key=lambda tup: str(tup[0])[-4:],
-            )
-            all_vars = self.variables
+        self.variables = "Unimplemented, sorry"
 
-        return all_vars
+        return self.variables
 
     def get(self, **kwargs):
         return self.query(**kwargs)
@@ -166,7 +157,8 @@ class FIADBfullreport(Client):
         }
 
         resp = self.session.get(url, params=params)
-        print(resp.url)  # For troubleshooting
+        if self.verbose:
+            print(resp.url) # For troubleshooting
 
         if resp.status_code == 200:
             try:
@@ -175,7 +167,7 @@ class FIADBfullreport(Client):
                 raise ex
 
             if data["EVALIDatorOutput"] == "":
-                return ["Empty evalGrp query results"]
+                return ["Empty fullReport query results"]
             return data["EVALIDatorOutput"]
 
         elif resp.status_code == 204:
@@ -186,10 +178,10 @@ class FIADBfullreport(Client):
 
 
 class FIADBevalgrp(Client):
-    """ To identify which evaluation groups are in the database """
+    """ Identify which evaluation groups are in the database """
 
-    def __init__(self, session=None):
-        Client.__init__(self)
+    def __init__(self, session=None, verbose=False):
+        Client.__init__(self, session, verbose)
         self.endpoint_url = (
             "https://apps.fs.usda.gov/Evalidator/rest/Evalidator/evalgrp"
         )
@@ -220,7 +212,8 @@ class FIADBevalgrp(Client):
         }
 
         resp = self.session.get(url, params=params)
-        print(resp.url)  # For troubleshooting
+        if self.verbose:
+            print(resp.url) # For troubleshooting
 
         if resp.status_code == 200:
             try:
@@ -242,8 +235,8 @@ class FIADBevalgrp(Client):
 
 
 class FIADBstatecdlonlatrad(Client):
-    def __init__(self, session=None):
-        Client.__init__(self)
+    def __init__(self, session=None, verbose=False):
+        Client.__init__(self, session, verbose)
         self.endpoint_url = (
             "https://apps.fs.usda.gov/Evalidator/rest/Evalidator/statecdLonLatRad"
         )
@@ -257,13 +250,14 @@ class FIADBstatecdlonlatrad(Client):
 
         params = {
             "lon": -abs(lon),  # NAD83; Note: all longitude values should be negative
-            "lat": lat,  # NAD83
+            "lat": lat,        # NAD83
             "rad": rad,
             "schemaName": "FS_FIA_SPATIAL",
         }
 
         resp = self.session.get(url, params=params)
-        # print(resp.url) # For troubleshooting
+        if self.verbose:
+            print(resp.url) # For troubleshooting
 
         if resp.status_code == 200:
             try:
@@ -283,8 +277,8 @@ class FIADBstatecdlonlatrad(Client):
 
 
 class FIADBreftable(Client):
-    def __init__(self, session=None):
-        Client.__init__(self)
+    def __init__(self, session=None, verbose=False):
+        Client.__init__(self, session, verbose)
         self.endpoint_url = (
             "https://apps.fs.usda.gov/Evalidator/rest/Evalidator/refTable"
         )
@@ -323,7 +317,8 @@ class FIADBreftable(Client):
         }
 
         resp = self.session.get(url, params=params)
-        # print(resp.url) # For troubleshooting
+        if self.verbose:
+            print(resp.url) # For troubleshooting
 
         if resp.status_code == 200:
             try:
@@ -368,15 +363,15 @@ class FIADBreftable(Client):
 
 
 class FIADB(object):
-    def __init__(self, year=None, session=None):
+    def __init__(self, verbose=False, session=None):
 
         if not session:
             session = new_session()
-
         self.session = session
         self.session.headers.update({"User-Agent": ("python-usda-fs-fiadb")})
+        self.verbose = verbose
 
-        self.fullreport = FIADBfullreport(session)
-        self.statecdlonlatrad = FIADBstatecdlonlatrad(session)
-        self.reftable = FIADBreftable(session)
-        self.evalgrp = FIADBevalgrp(session)
+        self.fullreport = FIADBfullreport(session, verbose)
+        self.statecdlonlatrad = FIADBstatecdlonlatrad(session, verbose)
+        self.reftable = FIADBreftable(session, verbose)
+        self.evalgrp = FIADBevalgrp(session, verbose)
