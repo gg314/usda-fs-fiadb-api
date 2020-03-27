@@ -1,3 +1,6 @@
+## Python USDA Forest Inventory and Analysis Database API Wrapper
+This is a fairly simple wrapper to the APIs available from the U.S. Forest Service's <abbr title="Forest Inventory and Analysis Database">FIADB</abbr>.
+
 ## Documentation & Links
 [General FIADB API "documentation"](https://apps.fs.usda.gov/fia/datamart/images/datamart_api_tutorials.html)
 
@@ -8,9 +11,11 @@
 [Documentation PDFs, including information at the table level](https://www.fia.fs.fed.us/library/database-documentation/)
 
 ## fullReport Example
-[Get all species in Wisconsin grouped by county](https://apps.fs.usda.gov/Evalidator/rest/Evalidator/fullreport?reptype=State&lat=0&lon=0&radius=0&snum=Number%20of%20live%20trees%20(at%20least%201%20inch%20d.b.h./d.r.c.),%20in%20trees,%20on%20forest%20land&sdenom=No%20denominator%20-%20just%20produce%20estimates&wc=552018&pselected=Species%20group&rselected=County%20code%20and%20name&cselected=All%20live%20stocking&ptime=Current&rtime=Current&ctime=Current&wf=&wnum=&wnumdenom=&FIAorRPA=FIADEF&outputFormat=JSON&estOnly=Y&schemaName=FS_FIADB.)
+FullReport queries can be very difficult to write and parse without testing first on the USDA's Java-based [Evalidator](https://apps.fs.usda.gov/Evalidator/evalidator.jsp).
 
-[Get acres per country](https://apps.fs.usda.gov/Evalidator/rest/Evalidator/fullreport?reptype=State&lat=0&lon=0&radius=0&snum=Area%20of%20sampled%20land%20and%20water,%20in%20acres&sdenom=No%20denominator%20-%20just%20produce%20estimates&wc=552018&pselected=None&rselected=County%20code%20and%20name&cselected=EVALID&ptime=Current&rtime=Current&ctime=Current&wf=&wnum=&wnumdenom=&FIAorRPA=FIADEF&outputFormat=HTML&estOnly=Y&schemaName=FS_FIADB.)
+[Web example: Get all species in Wisconsin grouped by county](https://apps.fs.usda.gov/Evalidator/rest/Evalidator/fullreport?reptype=State&lat=0&lon=0&radius=0&snum=Number%20of%20live%20trees%20(at%20least%201%20inch%20d.b.h./d.r.c.),%20in%20trees,%20on%20forest%20land&sdenom=No%20denominator%20-%20just%20produce%20estimates&wc=552018&pselected=Species%20group&rselected=County%20code%20and%20name&cselected=All%20live%20stocking&ptime=Current&rtime=Current&ctime=Current&wf=&wnum=&wnumdenom=&FIAorRPA=FIADEF&outputFormat=HTML&estOnly=Y&schemaName=FS_FIADB.)
+
+[Web example: Get acres per country](https://apps.fs.usda.gov/Evalidator/rest/Evalidator/fullreport?reptype=State&lat=0&lon=0&radius=0&snum=Area%20of%20sampled%20land%20and%20water,%20in%20acres&sdenom=No%20denominator%20-%20just%20produce%20estimates&wc=552018&pselected=None&rselected=County%20code%20and%20name&cselected=EVALID&ptime=Current&rtime=Current&ctime=Current&wf=&wnum=&wnumdenom=&FIAorRPA=FIADEF&outputFormat=HTML&estOnly=Y&schemaName=FS_FIADB.)
 
 ```python
 # Find total number of softwood and hardwood trees by Wisconsin county

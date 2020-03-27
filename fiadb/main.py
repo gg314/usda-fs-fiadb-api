@@ -42,8 +42,46 @@ class FIADBfullreport(Client):
         Client.__init__(self)
         self.endpoint_url = 'https://apps.fs.usda.gov/Evalidator/rest/Evalidator/fullreport'
 
-    def tables(self, *args, **kwargs):
-        return "TODO"
+
+    def list_attributes(self, *args, **kwargs):
+        """ 
+        return a list of (NUMBER, DESCRIPTION, TIMBERLAND_ONLY) of attributes that can be used in fullReport's snum, etc.
+         - TIMBERLAND displays whether the attribute is limited to timberland.
+        """
+        try:
+            return self.attributes
+        except AttributeError:
+            query = FIADBrefTable().get(tableName="REF_POP_ATTRIBUTE", colList="ATTRIBUTE_NBR, ATTRIBUTE_DESCR, TIMBERLAND")
+            self.attributes = sorted([(p['ATTRIBUTE_NBR'], p['ATTRIBUTE_DESCR'], p['TIMBERLAND']) for p in query], key=lambda tup: tup[0])
+            return self.attributes
+
+
+    def list_evalgrps(self, *args, **kwargs):
+        """ 
+        return a list of (EVAL_GRP, EVAL_GRP_DESCR, STATECD) of eval_grps that can be used in fullReport's wc.
+        sorted by earliest to latest, for some reason.
+        """
+        try:
+            return self.eval_grps
+        except AttributeError:
+            query = FIADBrefTable().get(tableName="POP_EVAL_GRP", colList="EVAL_GRP, EVAL_GRP_DESCR, STATECD")
+            self.eval_grps = sorted([(p['EVAL_GRP'], p['EVAL_GRP_DESCR'], p['STATECD']) for p in query], key=lambda tup: str(tup[0])[-4:])
+            return self.eval_grps
+
+    def list_vars(self, type="*", *args, **kwargs):
+        """ 
+        return a list of () (used in fullReport's pselected, rselected, cselected).
+        sorted by earliest to latest, for some reason.
+        """
+        try:
+            all_vars = self.variables
+        except AttributeError:
+            query = FIADBrefTable().get(tableName="POP_EVAL_GRP", colList="EVAL_GRP, EVAL_GRP_DESCR, STATECD")
+            self.variables = sorted([(p['EVAL_GRP'], p['EVAL_GRP_DESCR'], p['STATECD']) for p in query], key=lambda tup: str(tup[0])[-4:])
+            all_vars = self.variables
+        
+        return all_vars
+
 
     def get(self, **kwargs):
         return (self.query(**kwargs))
@@ -78,12 +116,12 @@ class FIADBfullreport(Client):
             'lat': lat,       # NAD83; Note: all longitude values should be negative
             'lon': lon, # NAD83
             'radius': radius, # if using repType="Circle", in [miles]
-            'snum': snum,       # See values of attribute_descr variable in evalidator_pop_est_1_6_1FIADB table
-            'sdenom': sdenom, # If not performing a ratio estimate then enter “No denominator -just produce estimate.“ For ratio estimates see values of attribute_descr  variable in evalidator_pop_est_1_6_1FIADB table.
-            'wc': wc,         # which dataset? see values of eval_grp variable in pop_eval_grp FIADB table. When more than one evaluation group is selected the evaluation group numbers should be separated by a comma. Or use evalGrp API to find group by state.
-            'pselected': pselected, # See values of label_var variable in variable_library table where page_list='Y'.
-            'rselected': rselected, # See values of label_var variable in variable_library table where row_list='Y'.
-            'cselected': cselected, # See values of label_var variable in variable_library table where col_list='Y'
+            'snum': snum,     # Numerator: See values of self.list_attributes()
+            'sdenom': sdenom, # Denominator: If not performing a ratio estimate then enter 0, "No denominator -just produce estimate." For ratio estimates see values of self.list_attributes().
+            'wc': wc,         # which dataset? See values of self.list_evalgrps(). When more than one evaluation group is selected, evaluation group numbers are comma-separated. Use evalGrp API to find group by state.
+            'pselected': pselected, # See label_var variable in variable_library online table where page_list='Y'.
+            'rselected': rselected, # See label_var variable in variable_library online table where row_list='Y'.
+            'cselected': cselected, # See label_var variable in variable_library online table where col_list='Y'
             'ptime': test_param(ptime, time_opts),
             'rtime': test_param(rtime, time_opts),
             'ctime': test_param(ctime, time_opts),
@@ -125,7 +163,18 @@ class FIADBevalgrp(Client):
     def __init__(self, session=None):
         Client.__init__(self)
         self.endpoint_url = 'https://apps.fs.usda.gov/Evalidator/rest/Evalidator/evalgrp'
-        self.available_cols = FIADBrefTable().columns(tableName="POP_EVAL_GRP")
+
+
+    def columns(self, *args, **kwargs):
+        """ 
+        return a list of columns from `POP_EVAL_GRP` that can be used in a whereClause.
+        """
+        try:
+            return self.available_cols
+        except AttributeError:
+            self.available_cols = FIADBrefTable().columns(tableName="POP_EVAL_GRP")
+            return self.available_cols
+
 
     def get(self, whereClause="", mostRecent="Y", **kwargs):
         return (self.query(whereClause, mostRecent, **kwargs))
@@ -177,8 +226,8 @@ class FIADBstatecdLonLatRad(Client):
         url = self.endpoint_url
 
         params = {
-            'lon': -abs(lon), # NAD83
-            'lat': lat,       # NAD83; Note: all longitude values should be negative
+            'lon': -abs(lon), # NAD83; Note: all longitude values should be negative
+            'lat': lat,       # NAD83
             'rad': rad,
             'schemaName': "FS_FIA_SPATIAL"
         }
@@ -209,6 +258,7 @@ class FIADBrefTable(Client):
     def __init__(self, session=None):
         Client.__init__(self)
         self.endpoint_url = 'https://apps.fs.usda.gov/Evalidator/rest/Evalidator/refTable'
+    
 
     def tables(self, *args, **kwargs):
         # For now, it looks like we need to download this list in HTML and parse it.
@@ -227,8 +277,8 @@ class FIADBrefTable(Client):
         return list(result.keys())
 
 
-    def get(self, **kwargs):
-        return (self.query(**kwargs))
+    def get(self, tableName, colList="*", whereStr="1=1", **kwargs):
+        return (self.query(tableName, colList, whereStr, **kwargs))
 
 
     def query(self, tableName, colList="*", whereStr="1=1", **kwargs):
