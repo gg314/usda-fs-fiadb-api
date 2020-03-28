@@ -7,13 +7,10 @@ This is a fairly simple wrapper to the APIs available from the US Forest Service
 
 ## Documentation & Links
 
-[General FIADB API "documentation"](https://apps.fs.usda.gov/fia/datamart/images/datamart_api_tutorials.html)
-
-[List of `fullReport` variables](https://apps.fs.usda.gov/fia/datamart/images/Evalidator_variable_library.html)
-
-[List of `fullReport` population estimates](https://apps.fs.usda.gov/fia/datamart/images/Evalidator_pop_estimates.html) or use `FIADB.fullreport.list_attributes()`
-
-[Table documentation PDFs](https://www.fia.fs.fed.us/library/database-documentation/)
+* [General FIADB API "documentation"](https://apps.fs.usda.gov/fia/datamart/images/datamart_api_tutorials.html)
+* [List of `fullReport` variables](https://apps.fs.usda.gov/fia/datamart/images/Evalidator_variable_library.html)
+* [List of `fullReport` population estimates](https://apps.fs.usda.gov/fia/datamart/images/Evalidator_pop_estimates.html) or use `FIADB.fullreport.list_attributes()`
+* [Table documentation PDFs](https://www.fia.fs.fed.us/library/database-documentation/)
 
 ## Usage
 

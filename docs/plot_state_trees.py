@@ -35,10 +35,11 @@ for filename in files:
 
         df = pd.read_csv(filename, dtype={"FIPS": str})
 
-    #    print('      <li><input type="radio" id="%d" name="t" /><label for="%d">%s<span style=\'background-image: url("results/ny_%s.png")\'></span></label></li>' % (counter, counter, match.group(1), match.group(1)))
+        # Lazy printing of HTML
+        # print('      <li><input type="radio" id="%d" name="t" /><label for="%d">%s<span style=\'background-image: url("results/ny_%s.png")\'></span></label></li>' % (counter, counter, match.group(1), match.group(1)))
 
         # California: {"lat": 37.216, "lon": -119.72}, width="700", height="1050",
-        # Colorado:  {"lat": 39.14, "lon": -105.33}, width="?", height="?",
+        # Colorado:  {"lat": 39.14, "lon": -105.33}, width="850", height="750",
         # Montana:  {"lat": 47.217, "lon": -110.087}, width="750", height="650",
         # New York:  {"lat": 43.25, "lon": -75.3}, width="850", height="750",
         # Wisconsin:  {"lat": 44.8, "lon": -89.4173}, width="750", height="650",
@@ -69,7 +70,7 @@ for filename in files:
                 }
             }
         )
-   #     fig.update_coloraxes(showscale=False)
+   #     fig.update_coloraxes(showscale=False) # Uncomment to include color scale
         fig.update_layout(showlegend=False)
 
         #      fig.show() # show interactive figure in browser
@@ -78,7 +79,7 @@ for filename in files:
             format="png",
             width="850",
             height="750",
-            scale="2",
+            scale="1", # scale="2" for higher resolution
             validate=False,
         )
         print("Saved %s (%d/%d)" % (match.group(1), counter, len(files)))
