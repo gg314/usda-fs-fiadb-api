@@ -1,3 +1,11 @@
+# Example code results
+docs/data/*
+docs/results/*
+!docs/results/compiled*
+
+
+# Automatic python ignores below
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
