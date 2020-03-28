@@ -2,7 +2,7 @@
 
 This is a fairly simple wrapper to the APIs available from the US Forest Service's <abbr title="Forest Inventory and Analysis Database">FIADB</abbr>.
 
-<img src="./docs/results/compiled_co.png" alt="" />
+<img src="./docs/results/compiled_mt.png" alt="" />
 
 
 ## Documentation & Links
