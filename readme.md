@@ -2,6 +2,10 @@
 
 This is a fairly simple wrapper to the APIs available from the US Forest Service's <abbr title="Forest Inventory and Analysis Database">FIADB</abbr>.
 
+
+<img src="./docs/results/compiled.png" alt="" />
+
+
 ## Documentation & Links
 
 [General FIADB API "documentation"](https://apps.fs.usda.gov/fia/datamart/images/datamart_api_tutorials.html)
@@ -76,13 +80,13 @@ walnuts = client.reftable.get(
 | Arizona walnut                   | _Juglans major_       |
 
 
-## Docs
-Choropleths (county-level colored maps) are easy to create using a utility like plotly (which has a Python implementation).
+## More examples
+County-level choropleths (region-shaded maps) are easy to create using a utility like plotly (which has a Python implementation).
 
 ```
 > pip install plotly
 > pip install psutil requests ipywidgets
-# install orca according to https://github.com/plotly/orca
+# Optionally install orca for exporting static images
 ```
 
 <img src="./docs/hardwoods-vs-softwoods-in-wi.png" alt="" />
