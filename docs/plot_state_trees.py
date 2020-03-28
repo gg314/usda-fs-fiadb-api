@@ -8,7 +8,7 @@ import pandas as pd
 # from subprocess import call
 import plotly
 
-state_prefix = "mt"
+state_prefix = "ny"
 
 
 # I am having trouble getting orca to start, so I run a server with `orca serve --port 51110 --debug` and then execute the Python code
@@ -35,11 +35,12 @@ for filename in files:
 
         df = pd.read_csv(filename, dtype={"FIPS": str})
 
-        print("Saving %s" % match.group(1))
+    #    print('      <li><input type="radio" id="%d" name="t" /><label for="%d">%s<span style=\'background-image: url("results/ny_%s.png")\'></span></label></li>' % (counter, counter, match.group(1), match.group(1)))
 
         # California: {"lat": 37.216, "lon": -119.72}, width="700", height="1050",
         # Colorado:  {"lat": 39.14, "lon": -105.33}, width="?", height="?",
-        # Montana:  {"lat": 47.217, "lon": -110.087}, width="?", height="?",
+        # Montana:  {"lat": 47.217, "lon": -110.087}, width="750", height="650",
+        # New York:  {"lat": 43.25, "lon": -75.3}, width="850", height="750",
         # Wisconsin:  {"lat": 44.8, "lon": -89.4173}, width="750", height="650",
 
         lbl = "PER_COUNTY"
@@ -50,9 +51,9 @@ for filename in files:
             color=lbl,
             color_continuous_scale="tempo",  # "mint" or others
             zoom=5.4,
-            center={"lat": 47.217, "lon": -110.087},
+            center={"lat": 43.25, "lon": -75.3},
             opacity=1,
-            labels={lbl: match.group(1) + " per acre"},
+            labels={lbl: "trees per acre"},
             mapbox_style="white-bg",  # "carto-positron"
         )
         fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
@@ -68,15 +69,16 @@ for filename in files:
                 }
             }
         )
-        fig.update_coloraxes(showscale=False)
+   #     fig.update_coloraxes(showscale=False)
         fig.update_layout(showlegend=False)
 
         #      fig.show() # show interactive figure in browser
         fig.write_image(
             file="./results/" + state_prefix + "_" + match.group(1) + ".png",
             format="png",
-            width="750",
-            height="650",
+            width="850",
+            height="750",
+            scale="2",
             validate=False,
         )
         print("Saved %s (%d/%d)" % (match.group(1), counter, len(files)))

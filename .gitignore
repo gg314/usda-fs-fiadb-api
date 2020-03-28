@@ -1,7 +1,9 @@
 # Example code results
 docs/data/*
+!docs/data/ny*
 docs/results/*
 !docs/results/compiled*
+!docs/results/ny*
 
 
 # Automatic python ignores below

@@ -1,0 +1,214 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Trees of New York: usda-fs-fiadb-api demo</title>
+  
+  <style type="text/css">
+      body {
+        background: #d4dee9;
+        padding: 0;
+        margin: 0;
+        text-align: left;
+        font-family: "Segoe UI";
+        height: 100vh;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        align-items: center;
+      }
+
+      .container {
+        width: 80vw;
+        height: 90vh;
+        flex: 0 0 auto;
+        position: relative;
+        display: flex;
+      }
+
+      ul {
+        width: 300px;
+        flex: 0 0 auto;
+        margin: 0;
+        padding: 0;
+        max-height: 100%;
+        overflow-y: scroll;
+      }
+
+      li {
+        padding: .1rem 0.25rem;
+        list-style: none;
+        transition: .1s linear all;
+        text-align: right;
+      }
+
+      li span {
+        background: #fff url('') no-repeat center center;
+        display: block;
+        top: 0;
+        right: 0;
+        left: 300px;
+        height: 100%;
+        position: absolute;
+        opacity: 0;
+        cursor: default;
+        background-size: contain;
+      }
+
+      input:checked + label span {
+        opacity: 1;
+        z-index: 300;
+      }
+
+      .display {
+        background: #fff url('results/co_All.png') no-repeat center center;
+        height: 100%;
+        flex: 1 1 auto;
+        box-shadow: 3px 0px 10px rgba(0, 0, 0, .2);
+      }
+
+      label {
+        display: block;
+        padding: 0.5rem 0.5rem;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+
+      input:checked + label {
+        background: rgba(0, 0, 0, .09);
+      }
+
+      label:hover {
+        background: rgba(0, 0, 0, .05);
+      }
+
+      label:hover span {
+        opacity: 1;
+        z-index: 500;
+      }
+
+      input {
+        display: none;
+      }
+      
+  </style>
+
+
+
+</head>
+<body>
+
+  <div class="container">
+    <ul>
+      <li><input type="radio" id="1" name="t" /><label for="1">All<span style='background-image: url("results/ny_All.png")'></span></label></li>
+      <li><input type="radio" id="2" name="t" /><label for="2">ailanthus<span style='background-image: url("results/ny_ailanthus.png")'></span></label></li>
+      <li><input type="radio" id="3" name="t" /><label for="3">American basswood<span style='background-image: url("results/ny_American basswood.png")'></span></label></li>
+      <li><input type="radio" id="4" name="t" /><label for="4">American beech<span style='background-image: url("results/ny_American beech.png")'></span></label></li>
+      <li><input type="radio" id="5" name="t" /><label for="5">American chestnut<span style='background-image: url("results/ny_American chestnut.png")'></span></label></li>
+      <li><input type="radio" id="6" name="t" /><label for="6">American elm<span style='background-image: url("results/ny_American elm.png")'></span></label></li>
+      <li><input type="radio" id="7" name="t" /><label for="7">American hornbeam, musclewood<span style='background-image: url("results/ny_American hornbeam, musclewood.png")'></span></label></li>
+      <li><input type="radio" id="8" name="t" /><label for="8">American mountain-ash<span style='background-image: url("results/ny_American mountain-ash.png")'></span></label></li>
+      <li><input type="radio" id="9" name="t" /><label for="9">American plum<span style='background-image: url("results/ny_American plum.png")'></span></label></li>
+      <li><input type="radio" id="10" name="t" /><label for="10">American sycamore<span style='background-image: url("results/ny_American sycamore.png")'></span></label></li>
+      <li><input type="radio" id="11" name="t" /><label for="11">apple spp.<span style='background-image: url("results/ny_apple spp..png")'></span></label></li>
+      <li><input type="radio" id="12" name="t" /><label for="12">balsam fir<span style='background-image: url("results/ny_balsam fir.png")'></span></label></li>
+      <li><input type="radio" id="13" name="t" /><label for="13">balsam poplar<span style='background-image: url("results/ny_balsam poplar.png")'></span></label></li>
+      <li><input type="radio" id="14" name="t" /><label for="14">Bebb willow<span style='background-image: url("results/ny_Bebb willow.png")'></span></label></li>
+      <li><input type="radio" id="15" name="t" /><label for="15">bigtooth aspen<span style='background-image: url("results/ny_bigtooth aspen.png")'></span></label></li>
+      <li><input type="radio" id="16" name="t" /><label for="16">bitternut hickory<span style='background-image: url("results/ny_bitternut hickory.png")'></span></label></li>
+      <li><input type="radio" id="17" name="t" /><label for="17">black ash<span style='background-image: url("results/ny_black ash.png")'></span></label></li>
+      <li><input type="radio" id="18" name="t" /><label for="18">black cherry<span style='background-image: url("results/ny_black cherry.png")'></span></label></li>
+      <li><input type="radio" id="19" name="t" /><label for="19">black locust<span style='background-image: url("results/ny_black locust.png")'></span></label></li>
+      <li><input type="radio" id="20" name="t" /><label for="20">black oak<span style='background-image: url("results/ny_black oak.png")'></span></label></li>
+      <li><input type="radio" id="21" name="t" /><label for="21">black spruce<span style='background-image: url("results/ny_black spruce.png")'></span></label></li>
+      <li><input type="radio" id="22" name="t" /><label for="22">black walnut<span style='background-image: url("results/ny_black walnut.png")'></span></label></li>
+      <li><input type="radio" id="23" name="t" /><label for="23">black willow<span style='background-image: url("results/ny_black willow.png")'></span></label></li>
+      <li><input type="radio" id="24" name="t" /><label for="24">blackgum<span style='background-image: url("results/ny_blackgum.png")'></span></label></li>
+      <li><input type="radio" id="25" name="t" /><label for="25">blue spruce<span style='background-image: url("results/ny_blue spruce.png")'></span></label></li>
+      <li><input type="radio" id="26" name="t" /><label for="26">boxelder<span style='background-image: url("results/ny_boxelder.png")'></span></label></li>
+      <li><input type="radio" id="27" name="t" /><label for="27">bur oak<span style='background-image: url("results/ny_bur oak.png")'></span></label></li>
+      <li><input type="radio" id="28" name="t" /><label for="28">butternut<span style='background-image: url("results/ny_butternut.png")'></span></label></li>
+      <li><input type="radio" id="29" name="t" /><label for="29">catalpa spp.<span style='background-image: url("results/ny_catalpa spp..png")'></span></label></li>
+      <li><input type="radio" id="30" name="t" /><label for="30">chestnut oak<span style='background-image: url("results/ny_chestnut oak.png")'></span></label></li>
+      <li><input type="radio" id="31" name="t" /><label for="31">chinkapin oak<span style='background-image: url("results/ny_chinkapin oak.png")'></span></label></li>
+      <li><input type="radio" id="32" name="t" /><label for="32">chokecherry<span style='background-image: url("results/ny_chokecherry.png")'></span></label></li>
+      <li><input type="radio" id="33" name="t" /><label for="33">cucumbertree<span style='background-image: url("results/ny_cucumbertree.png")'></span></label></li>
+      <li><input type="radio" id="34" name="t" /><label for="34">Douglas-fir<span style='background-image: url("results/ny_Douglas-fir.png")'></span></label></li>
+      <li><input type="radio" id="35" name="t" /><label for="35">eastern cottonwood<span style='background-image: url("results/ny_eastern cottonwood.png")'></span></label></li>
+      <li><input type="radio" id="36" name="t" /><label for="36">eastern hemlock<span style='background-image: url("results/ny_eastern hemlock.png")'></span></label></li>
+      <li><input type="radio" id="37" name="t" /><label for="37">eastern hophornbeam<span style='background-image: url("results/ny_eastern hophornbeam.png")'></span></label></li>
+      <li><input type="radio" id="38" name="t" /><label for="38">eastern redcedar<span style='background-image: url("results/ny_eastern redcedar.png")'></span></label></li>
+      <li><input type="radio" id="39" name="t" /><label for="39">eastern white pine<span style='background-image: url("results/ny_eastern white pine.png")'></span></label></li>
+      <li><input type="radio" id="40" name="t" /><label for="40">European mountain-ash<span style='background-image: url("results/ny_European mountain-ash.png")'></span></label></li>
+      <li><input type="radio" id="41" name="t" /><label for="41">fir spp.<span style='background-image: url("results/ny_fir spp..png")'></span></label></li>
+      <li><input type="radio" id="42" name="t" /><label for="42">flowering dogwood<span style='background-image: url("results/ny_flowering dogwood.png")'></span></label></li>
+      <li><input type="radio" id="43" name="t" /><label for="43">Fraser fir<span style='background-image: url("results/ny_Fraser fir.png")'></span></label></li>
+      <li><input type="radio" id="44" name="t" /><label for="44">gray birch<span style='background-image: url("results/ny_gray birch.png")'></span></label></li>
+      <li><input type="radio" id="45" name="t" /><label for="45">green ash<span style='background-image: url("results/ny_green ash.png")'></span></label></li>
+      <li><input type="radio" id="46" name="t" /><label for="46">hackberry spp.<span style='background-image: url("results/ny_hackberry spp..png")'></span></label></li>
+      <li><input type="radio" id="47" name="t" /><label for="47">hackberry<span style='background-image: url("results/ny_hackberry.png")'></span></label></li>
+      <li><input type="radio" id="48" name="t" /><label for="48">hawthorn spp.<span style='background-image: url("results/ny_hawthorn spp..png")'></span></label></li>
+      <li><input type="radio" id="49" name="t" /><label for="49">hickory spp.<span style='background-image: url("results/ny_hickory spp..png")'></span></label></li>
+      <li><input type="radio" id="50" name="t" /><label for="50">jack pine<span style='background-image: url("results/ny_jack pine.png")'></span></label></li>
+      <li><input type="radio" id="51" name="t" /><label for="51">larch spp.<span style='background-image: url("results/ny_larch spp..png")'></span></label></li>
+      <li><input type="radio" id="52" name="t" /><label for="52">maple spp.<span style='background-image: url("results/ny_maple spp..png")'></span></label></li>
+      <li><input type="radio" id="53" name="t" /><label for="53">mockernut hickory<span style='background-image: url("results/ny_mockernut hickory.png")'></span></label></li>
+      <li><input type="radio" id="54" name="t" /><label for="54">mountain maple<span style='background-image: url("results/ny_mountain maple.png")'></span></label></li>
+      <li><input type="radio" id="55" name="t" /><label for="55">mountain-ash spp.<span style='background-image: url("results/ny_mountain-ash spp..png")'></span></label></li>
+      <li><input type="radio" id="56" name="t" /><label for="56">mulberry spp.<span style='background-image: url("results/ny_mulberry spp..png")'></span></label></li>
+      <li><input type="radio" id="57" name="t" /><label for="57">northern catalpa<span style='background-image: url("results/ny_northern catalpa.png")'></span></label></li>
+      <li><input type="radio" id="58" name="t" /><label for="58">northern mountain-ash<span style='background-image: url("results/ny_northern mountain-ash.png")'></span></label></li>
+      <li><input type="radio" id="59" name="t" /><label for="59">northern pin oak<span style='background-image: url("results/ny_northern pin oak.png")'></span></label></li>
+      <li><input type="radio" id="60" name="t" /><label for="60">northern red oak<span style='background-image: url("results/ny_northern red oak.png")'></span></label></li>
+      <li><input type="radio" id="61" name="t" /><label for="61">northern white-cedar<span style='background-image: url("results/ny_northern white-cedar.png")'></span></label></li>
+      <li><input type="radio" id="62" name="t" /><label for="62">Norway maple<span style='background-image: url("results/ny_Norway maple.png")'></span></label></li>
+      <li><input type="radio" id="63" name="t" /><label for="63">Norway spruce<span style='background-image: url("results/ny_Norway spruce.png")'></span></label></li>
+      <li><input type="radio" id="64" name="t" /><label for="64">paper birch<span style='background-image: url("results/ny_paper birch.png")'></span></label></li>
+      <li><input type="radio" id="65" name="t" /><label for="65">pignut hickory<span style='background-image: url("results/ny_pignut hickory.png")'></span></label></li>
+      <li><input type="radio" id="66" name="t" /><label for="66">pin cherry<span style='background-image: url("results/ny_pin cherry.png")'></span></label></li>
+      <li><input type="radio" id="67" name="t" /><label for="67">pin oak<span style='background-image: url("results/ny_pin oak.png")'></span></label></li>
+      <li><input type="radio" id="68" name="t" /><label for="68">pitch pine<span style='background-image: url("results/ny_pitch pine.png")'></span></label></li>
+      <li><input type="radio" id="69" name="t" /><label for="69">post oak<span style='background-image: url("results/ny_post oak.png")'></span></label></li>
+      <li><input type="radio" id="70" name="t" /><label for="70">quaking aspen<span style='background-image: url("results/ny_quaking aspen.png")'></span></label></li>
+      <li><input type="radio" id="71" name="t" /><label for="71">red hickory<span style='background-image: url("results/ny_red hickory.png")'></span></label></li>
+      <li><input type="radio" id="72" name="t" /><label for="72">red maple<span style='background-image: url("results/ny_red maple.png")'></span></label></li>
+      <li><input type="radio" id="73" name="t" /><label for="73">red mulberry<span style='background-image: url("results/ny_red mulberry.png")'></span></label></li>
+      <li><input type="radio" id="74" name="t" /><label for="74">red pine<span style='background-image: url("results/ny_red pine.png")'></span></label></li>
+      <li><input type="radio" id="75" name="t" /><label for="75">red spruce<span style='background-image: url("results/ny_red spruce.png")'></span></label></li>
+      <li><input type="radio" id="76" name="t" /><label for="76">redcedar or juniper spp.<span style='background-image: url("results/ny_redcedar or juniper spp..png")'></span></label></li>
+      <li><input type="radio" id="77" name="t" /><label for="77">river birch<span style='background-image: url("results/ny_river birch.png")'></span></label></li>
+      <li><input type="radio" id="78" name="t" /><label for="78">rock elm<span style='background-image: url("results/ny_rock elm.png")'></span></label></li>
+      <li><input type="radio" id="79" name="t" /><label for="79">sassafras<span style='background-image: url("results/ny_sassafras.png")'></span></label></li>
+      <li><input type="radio" id="80" name="t" /><label for="80">scarlet oak<span style='background-image: url("results/ny_scarlet oak.png")'></span></label></li>
+      <li><input type="radio" id="81" name="t" /><label for="81">Scotch pine<span style='background-image: url("results/ny_Scotch pine.png")'></span></label></li>
+      <li><input type="radio" id="82" name="t" /><label for="82">scrub oak<span style='background-image: url("results/ny_scrub oak.png")'></span></label></li>
+      <li><input type="radio" id="83" name="t" /><label for="83">serviceberry spp.<span style='background-image: url("results/ny_serviceberry spp..png")'></span></label></li>
+      <li><input type="radio" id="84" name="t" /><label for="84">shagbark hickory<span style='background-image: url("results/ny_shagbark hickory.png")'></span></label></li>
+      <li><input type="radio" id="85" name="t" /><label for="85">shellbark hickory<span style='background-image: url("results/ny_shellbark hickory.png")'></span></label></li>
+      <li><input type="radio" id="86" name="t" /><label for="86">silver maple<span style='background-image: url("results/ny_silver maple.png")'></span></label></li>
+      <li><input type="radio" id="87" name="t" /><label for="87">slippery elm<span style='background-image: url("results/ny_slippery elm.png")'></span></label></li>
+      <li><input type="radio" id="88" name="t" /><label for="88">spruce spp.<span style='background-image: url("results/ny_spruce spp..png")'></span></label></li>
+      <li><input type="radio" id="89" name="t" /><label for="89">striped maple<span style='background-image: url("results/ny_striped maple.png")'></span></label></li>
+      <li><input type="radio" id="90" name="t" /><label for="90">sugar maple<span style='background-image: url("results/ny_sugar maple.png")'></span></label></li>
+      <li><input type="radio" id="91" name="t" /><label for="91">swamp white oak<span style='background-image: url("results/ny_swamp white oak.png")'></span></label></li>
+      <li><input type="radio" id="92" name="t" /><label for="92">sweet birch<span style='background-image: url("results/ny_sweet birch.png")'></span></label></li>
+      <li><input type="radio" id="93" name="t" /><label for="93">sweet cherry, domesticated<span style='background-image: url("results/ny_sweet cherry, domesticated.png")'></span></label></li>
+      <li><input type="radio" id="94" name="t" /><label for="94">sweet crab apple<span style='background-image: url("results/ny_sweet crab apple.png")'></span></label></li>
+      <li><input type="radio" id="95" name="t" /><label for="95">sweetgum<span style='background-image: url("results/ny_sweetgum.png")'></span></label></li>
+      <li><input type="radio" id="96" name="t" /><label for="96">Table Mountain pine<span style='background-image: url("results/ny_Table Mountain pine.png")'></span></label></li>
+      <li><input type="radio" id="97" name="t" /><label for="97">tamarack (native)<span style='background-image: url("results/ny_tamarack (native).png")'></span></label></li>
+      <li><input type="radio" id="98" name="t" /><label for="98">weeping willow<span style='background-image: url("results/ny_weeping willow.png")'></span></label></li>
+      <li><input type="radio" id="99" name="t" /><label for="99">white ash<span style='background-image: url("results/ny_white ash.png")'></span></label></li>
+      <li><input type="radio" id="100" name="t" /><label for="100">white mulberry<span style='background-image: url("results/ny_white mulberry.png")'></span></label></li>
+      <li><input type="radio" id="101" name="t" /><label for="101">white oak<span style='background-image: url("results/ny_white oak.png")'></span></label></li>
+      <li><input type="radio" id="102" name="t" /><label for="102">white spruce<span style='background-image: url("results/ny_white spruce.png")'></span></label></li>
+      <li><input type="radio" id="103" name="t" /><label for="103">willow spp.<span style='background-image: url("results/ny_willow spp..png")'></span></label></li>
+      <li><input type="radio" id="104" name="t" /><label for="104">yellow birch<span style='background-image: url("results/ny_yellow birch.png")'></span></label></li>
+      <li><input type="radio" id="105" name="t" /><label for="105">yellow-poplar<span style='background-image: url("results/ny_yellow-poplar.png")'></span></label></li>
+    </ul>
+    <div class="display"></div>
+</div>
+
+</body>
+</html>

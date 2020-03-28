@@ -13,8 +13,8 @@ def toFloat(f):
         return 0
 
 
-FIPS = "30"
-STATE_PREFIX = "mt"
+FIPS = "36"
+STATE_PREFIX = "ny" # ca: 6, co: 8, mt: 30, ny: 36, wi: 55
 
 client = FIADB(verbose=True)
 
@@ -51,7 +51,7 @@ data = {
 }
 
 for page in data:
-    title = "All" if page == "Page total" else page
+    title = "All" if page == "Page total" else page.replace("/", " or ")
     output_matrix = [["FIPS", "PER_COUNTY"]]
     for county in acres:
         try:
