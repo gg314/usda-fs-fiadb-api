@@ -2,8 +2,7 @@
 
 This is a fairly simple wrapper to the APIs available from the US Forest Service's <abbr title="Forest Inventory and Analysis Database">FIADB</abbr>.
 
-
-<img src="./docs/results/compiled.png" alt="" />
+<img src="./docs/results/compiled_co.png" alt="" />
 
 
 ## Documentation & Links
@@ -90,3 +89,4 @@ County-level choropleths (region-shaded maps) are easy to create using a utility
 ```
 
 <img src="./docs/hardwoods-vs-softwoods-in-wi.png" alt="" />
+<img src="./docs/results/compiled_wi.png" alt="" />
