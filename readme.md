@@ -88,5 +88,5 @@ County-level choropleths (region-shaded maps) are easy to create using a utility
 # Optionally install orca for exporting static images
 ```
 
-<img src="./docs/hardwoods-vs-softwoods-in-wi.png" alt="" />
+<img src="./docs/results/compiled_wi_hard_vs_softwoods.png" alt="" />
 <img src="./docs/results/compiled_wi.png" alt="" />
