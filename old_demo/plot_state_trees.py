@@ -34,7 +34,8 @@ for filename in files:
         import plotly.express as px
 
         df = pd.read_csv(filename, dtype={"FIPS": str})
-
+        print(df)
+        sys.exit()
         # Lazy printing of HTML
         # print('      <li><input type="radio" id="%d" name="t" /><label for="%d">%s<span style=\'background-image: url("results/ny_%s.png")\'></span></label></li>' % (counter, counter, match.group(1), match.group(1)))
 

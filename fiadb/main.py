@@ -12,7 +12,6 @@ def test_param(param, set):
     if param in set:
         return param
     else:
-        print("o no")
         raise APIException(
             "API Input Error: '" + str(param) + "' should be one of " + str(set)
         )

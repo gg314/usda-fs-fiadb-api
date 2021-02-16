@@ -1,0 +1,135 @@
+html,
+body {
+	height: 100%;
+	margin: 0;
+	font: 14px/16px "Segoe UI", Helvetica, sans-serif;
+}
+
+#map {
+	height: 100%;
+	width: 100%;
+}
+
+#selector {
+	padding: 1.0rem;
+	display: flex;
+	flex-direction: column;
+}
+
+.container {
+	display: flex;
+	height: 100vh;
+	width: 100vw;
+}
+
+.sidebar {
+	max-width: 300px;
+	width: 20%;
+	background: #f8f7f7;
+	flex: 0 0 auto;
+	display: flex;
+	flex-direction: column;
+}
+
+.content {
+	background: #c2c286;
+	flex: 1 1 auto;
+}
+
+select {
+	padding: 0.5rem 0.25rem;
+	border-radius: 3px;
+	border: 1px solid #c8c7c7;
+	margin-bottom: 1.0rem;
+	cursor: pointer;
+}
+
+option {
+	background: #fff;
+}
+
+select:focus {
+	box-shadow: 0 0 4px 0px rgb(94, 184, 204);
+	background: rgb(242, 247, 248);
+}
+
+.info b {
+	margin: 0.75rem 0 0.5rem;
+	font-weight: normal;
+	display: block;
+}
+
+.muted {
+	color: #7d8382
+}
+
+.info {
+	padding: 6px 8px;
+	font: 14px/16px "Harmonia Sans Pro", "Segoe UI", Helvetica, sans-serif;
+	background: white;
+	background: rgba(255, 255, 255, 0.8);
+	box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+	border-radius: 5px;
+}
+
+.info h4 {
+	margin: 0 0 5px;
+	color: #777;
+}
+
+.legend {
+	font-family: "Harmonia Sans Pro", 'Segoe UI', sans-serif;
+	text-align: left;
+	line-height: 18px;
+	color: #555;
+}
+
+.legend i {
+	width: 18px;
+	height: 18px;
+	float: left;
+	margin-right: 8px;
+	opacity: 0.7;
+}
+
+h4 {
+	font-weight: normal;
+	color: #5d7286;
+	font-size: 1.4rem;
+	font-variant: small-caps;
+}
+
+.logo {
+	height: 70px;
+	background: url('./images/logo.png') no-repeat center center;
+	background-size: contain;
+	margin: 0.75rem;
+}
+
+.divider {
+	height: 1px;
+	margin: 0.75rem 0.5rem 0.25rem;
+	background: rgb(228, 228, 228)
+}
+
+.filler {
+	flex: 1 1 auto;
+}
+
+.links {
+	padding: 0.75rem;
+}
+
+#link--github {
+	height: 32px;
+	width: 32px;
+	display: inline-block;
+	background: url('./images/github.png') no-repeat center center;
+	background-size: contain;
+	opacity: 0.2;
+	transition: .15s linear opacity;
+}
+
+#link--github:hover {
+	opacity: 0.6;
+}

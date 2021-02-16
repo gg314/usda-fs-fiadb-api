@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>USDA Forest Service FIADB Demo</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="shortcut icon" type="image/x-icon" href="./assets/images/favicon.png" />
+    <link rel="stylesheet" href="./assets/leaflet.css" />
+    <link rel="stylesheet" href="./assets/style.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+</head>
+<body>
+
+<div class="container">
+    <div class="sidebar">
+        <div class="logo"></div>
+        <div class="divider"></div>
+        <div id="selector">
+            <select id="state">
+                <option value='' disabled selected>Select a state</option>
+                <option value='02' data-state='AK'>Alaska</option>
+                <option value='01' data-state='AL'>Alabama</option>
+                <option value='05' data-state='AR'>Arkansas</option>
+                <option value='60' data-state='AS'>American Samoa</option>
+                <option value='04' data-state='AZ'>Arizona</option>
+                <option value='06' data-state='CA'>California</option>
+                <option value='08' data-state='CO'>Colorado</option>
+                <option value='09' data-state='CT'>Connecticut</option>
+                <option value='11' data-state='DC'>District of Columbia</option>
+                <option value='10' data-state='DE'>Delaware</option>
+                <option value='12' data-state='FL'>Florida</option>
+                <option value='13' data-state='GA'>Georgia</option>
+                <option value='66' data-state='GU'>Guam</option>
+                <option value='15' data-state='HI'>Hawaii</option>
+                <option value='19' data-state='IA'>Iowa</option>
+                <option value='16' data-state='ID'>Idaho</option>
+                <option value='17' data-state='IL'>Illinois</option>
+                <option value='18' data-state='IN'>Indiana</option>
+                <option value='20' data-state='KS'>Kansas</option>
+                <option value='21' data-state='KY'>Kentucky</option>
+                <option value='22' data-state='LA'>Louisiana</option>
+                <option value='25' data-state='MA'>Massachusetts</option>
+                <option value='24' data-state='MD'>Maryland</option>
+                <option value='23' data-state='ME'>Maine</option>
+                <option value='26' data-state='MI'>Michigan</option>
+                <option value='27' data-state='MN'>Minnesota</option>
+                <option value='29' data-state='MO'>Missouri</option>
+                <option value='28' data-state='MS'>Mississippi</option>
+                <option value='30' data-state='MT'>Montana</option>
+                <option value='37' data-state='NC'>North Carolina</option>
+                <option value='38' data-state='ND'>North Dakota</option>
+                <option value='31' data-state='NE'>Nebraska</option>
+                <option value='33' data-state='NH'>New Hampshire</option>
+                <option value='34' data-state='NJ'>New Jersey</option>
+                <option value='35' data-state='NM'>New Mexico</option>
+                <option value='32' data-state='NV'>Nevada</option>
+                <option value='36' data-state='NY'>New York</option>
+                <option value='39' data-state='OH'>Ohio</option>
+                <option value='40' data-state='OK'>Oklahoma</option>
+                <option value='41' data-state='OR'>Oregon</option>
+                <option value='42' data-state='PA'>Pennsylvania</option>
+                <option value='72' data-state='PR'>Puerto Rico</option>
+                <option value='44' data-state='RI'>Rhode Island</option>
+                <option value='45' data-state='SC'>South Carolina</option>
+                <option value='46' data-state='SD'>South Dakota</option>
+                <option value='47' data-state='TN'>Tennessee</option>
+                <option value='48' data-state='TX'>Texas</option>
+                <option value='49' data-state='UT'>Utah</option>
+                <option value='51' data-state='VA'>Virginia</option>
+                <option value='78' data-state='VI'>Virgin Islands</option>
+                <option value='50' data-state='VT'>Vermont</option>
+                <option value='53' data-state='WA'>Washington</option>
+                <option value='55' data-state='WI'>Wisconsin</option>
+                <option value='54' data-state='WV'>West Virginia</option>
+                <option value='56' data-state='WY'>Wyoming</option>
+            </select>
+    
+            <select id="grouping">
+                <option value='' disabled selected>Select a grouping</option>
+                <option value='Species'>Species (fine)</option>
+                <option value='Species group'>Species group (coarse)</option>
+            </select>
+            
+            <select id="species" disabled>
+                <option value='' selected>Select a species</option>
+            </select>
+        </div>
+        <div class="filler"></div>
+        <div class="links">
+            <a href="https://github.com/gg314/usda-fs-fiadb-api" id="link--github" title="View on Github"></a>
+        </div>
+    </div>
+    <div class="content">
+        <div id='map'></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var stateSelector = document.getElementById("state");
+    var groupingSelector = document.getElementById("grouping");
+    var speciesSelector = document.getElementById("species");
+
+    var map = L.map('map').setView([37.8, -96], 4);
+    var legend;
+    var info;
+
+    var fips; // default
+    var state_name;
+    var grouping = "species";
+    var tree_name;
+
+    var density_data;
+    var geojson_data;
+    var geojson;
+    var max_density;
+
+    stateSelector.addEventListener("change", function() {
+        populateGeojson();
+        populateSpecies();
+    }); 
+
+    groupingSelector.addEventListener("change", function() {
+        grouping = groupingSelector.value == "Species group" ? "species_group" : "species";
+        if (stateSelector.value && !geojson_data) {
+            populateGeojson();
+        }
+        populateSpecies();
+    });
+
+    speciesSelector.addEventListener("change", function() {
+        if (stateSelector.value && !geojson_data) {
+            populateGeojson();
+        }
+        combineData();
+        run();
+    });
+
+    function populateGeojson() {
+        fips = stateSelector.value;
+        if (!fips) { return null; }
+        state_name = stateSelector.options[stateSelector.selectedIndex].text;
+        speciesSelector.disabled = false;
+        fetch('./geojson/counties-' + fips + '.geojson')
+        .then(response => response.json())
+        .then(data => {
+            geojson_data = data;
+            console.log("Loaded GEOJson for " + state_name);
+            density_data = null;
+            if (groupingSelector.value) {
+                populateSpecies();
+            }
+            run();
+        })
+        .catch((error) => { console.error('GEOJson Error:', error); });
+    }
+
+    function populateSpecies() {
+        fetch('./data/' + fips + '/' + grouping + '.json')
+        .then(response => response.json())
+        .then(speciesListJson => {
+            density_data = speciesListJson["results"];
+            console.log("Loaded density data for " + state_name + " (" + grouping + ")");
+            var speciesList = Object.keys(density_data);
+            while (speciesSelector.childNodes.length >= 1) {
+                speciesSelector.removeChild(speciesSelector.firstChild);       
+            }
+            for (var i = 0; i < speciesList.length; i++) {
+                var name = speciesList[i]
+                newOption = document.createElement('option');
+                newOption.value=name;
+                newOption.text=name;
+                speciesSelector.appendChild(newOption);
+            }
+            if (stateSelector.value && !geojson_data) {
+                populateGeojson();
+            } else if (geojson_data) {
+                combineData();
+                run();
+            }
+        })
+        .catch((error) => { console.error('Populate Species Dropdown Error:', error); });
+    }
+
+    function combineData() {
+        max_density = 0;
+        tree_name = speciesSelector.options[speciesSelector.selectedIndex].text;
+        for (var ii = 0; ii < geojson_data["features"].length; ii++) {
+            feature = geojson_data["features"][ii];
+            feature_id = feature.id;
+            if (feature_id in density_data[tree_name]) {
+                density = density_data[tree_name][feature_id];
+                geojson_data["features"][ii]["properties"]["tree_density"] = density;
+                max_density = Math.max(max_density, density);
+            } else {
+                geojson_data["features"][ii]["properties"]["tree_density"] = undefined;
+                console.log("Couldn't find ID " + feature_id + " in density_data");
+            }
+            
+        }
+    }
+
+    function run() {
+        map.eachLayer(function (layer) {
+            map.removeLayer(layer);
+        });
+
+        if (false) { // optional: add openmap layer
+            L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+                maxZoom: 18,
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+                    'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                id: 'mapbox/light-v9',
+                tileSize: 512,
+                zoomOffset: -1
+            }).addTo(map);
+        }
+
+        // control that shows state info on hover
+        if (info instanceof L.Control) { map.removeControl(info); }
+        if (density_data) {
+            info = L.control();
+            info.onAdd = function (map) {
+                this._div = L.DomUtil.create('div', 'info');
+                this.update();
+                return this._div;
+            };
+            info.update = function (props) {
+                this._div.innerHTML = '<h4>' + tree_name + " in " + state_name + '</h4>' +  (props ? '<b>' + props.NAME + ' County</b><span class="muted">' + props.tree_density + ' trees / acre</span>': '');
+            };
+
+            info.addTo(map);
+        }
+
+        // get color depending on population density value
+        function getColor(d) {
+            return d >= max_density ? '#171f45' :
+                   d >= 7/8*max_density ? '#193753' :
+                   d >= 7/8*max_density ? '#1a5564' :
+                   d >= 5/8*max_density ? '#117575' :
+                   d >= 4/8*max_density ? '#2b917f' :
+                   d >= 3/8*max_density ? '#67aa88' :
+                   d >= 2/8*max_density ? '#a2c0a2' :
+                   d >= 1/8*max_density ? '#d0d9c6' : '#fef7f6';
+        }
+
+        function style(feature) {
+            return { weight: 1, opacity: 1, color: '#40464e', dashArray: '0', fillOpacity: 0.7, fillColor: getColor(feature.properties.tree_density)};
+        }
+
+        function highlightFeature(e) {
+            var layer = e.target;
+            layer.setStyle({weight: 3, color: '#666', dashArray: '', fillOpacity: 0.7});
+
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+            info.update(layer.feature.properties);
+        }
+
+        function resetHighlight(e) {
+            geojson.resetStyle(e.target);
+            info.update();
+        }
+
+        function zoomToFeature(e) {
+            map.fitBounds(e.target.getBounds());
+        }
+
+        function onEachFeature(feature, layer) {
+            layer.on({
+                mouseover: highlightFeature,
+                mouseout: resetHighlight,
+                /* click: zoomToFeature */
+            });
+        }
+
+        geojson = L.geoJson(geojson_data, {
+            style: style,
+            onEachFeature: onEachFeature
+        }).addTo(map);
+        
+        map.fitBounds(geojson.getBounds());
+        map.attributionControl.addAttribution('Data from the <a href="https://www.fs.usda.gov/">US Forest Service</a>');
+        
+        if (legend instanceof L.Control) { map.removeControl(legend); }
+        if (density_data) {
+            legend = L.control({position: 'bottomright'});
+            legend.onAdd = function (map) {
+                var grades; // grades = [0, 10, 20, 30, 40, 50, 60, 70, 80],
+                if (max_density >= 100) {
+                    max_density = Math.ceil(max_density / 10) * 10;
+                    grades = [... new Set(Array.apply(null, Array(9)).map(function (x, i) { return Math.round(((i/8.0*max_density + Number.EPSILON))) }))];
+                } else if (max_density >= 10) {
+                    grades = [... new Set(Array.apply(null, Array(9)).map(function (x, i) { return Math.round(((i/8.0*max_density + Number.EPSILON))) }))];
+                } else {
+                    grades = [... new Set(Array.apply(null, Array(9)).map(function (x, i) { return Math.round(((i/8.0*max_density + Number.EPSILON) * 100)) / 100 }))];
+                }
+                
+                var div = L.DomUtil.create('div', 'info legend'),
+                    grades = grades,
+                    labels = [],
+                    from, to;
+                for (var i = 0; i < grades.length; i++) {
+                    from = grades[i];
+                    to = grades[i + 1];
+                    labels.push('<i style="background:' + getColor(from) + '"></i> ' + from);
+                }
+
+                div.innerHTML = labels.join('<br>');
+                return div;
+            };
+
+            legend.addTo(map);
+        }
+    }
+
+    populateGeojson();
+
+</script>
+
+</body>
+</html>
+

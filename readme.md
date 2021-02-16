@@ -2,7 +2,9 @@
 
 This is a fairly simple wrapper to the APIs available from the US Forest Service's <abbr title="Forest Inventory and Analysis Database">FIADB</abbr>.
 
-<img src="./docs/results/compiled_mt.png" alt="" />
+For an interactive version of trees/per acre by county, see `/demo/index.html`.
+
+<img src="./old_demo/results/compiled_mt.png" alt="" />
 
 
 ## Documentation & Links
@@ -43,6 +45,9 @@ See the visual examples at the bottom of this guide, which were created with dat
 # Most recent evalGrps for Minnesota, Wisconsin
 client.evalgrp.get(whereClause="STATECD IN (55, 27)")
 > [272018, 552018]
+# All evalGrps for New York
+client.evalgrp.get(whereClause="STATECD IN (26)", mostRecent="N")
+> [261980, 261993, 262003, 262004, 262005, 262006, 262007, 262008, 262009, 262010, 262011, 262012, 262013, 262014, 262015, 262016, 262017, 262018, 262019]
 ```
 
 ### statecdlonlatrad Example
@@ -77,7 +82,7 @@ walnuts = client.reftable.get(
 
 
 ## More examples
-County-level choropleths (region-shaded maps) are easy to create using a utility like plotly (which has a Python implementation).
+County-level choropleths (region-shaded maps) are easy to create using a utility like plotly (which has a Python implementation) or Leaflet.
 
 ```
 > pip install plotly
@@ -85,5 +90,5 @@ County-level choropleths (region-shaded maps) are easy to create using a utility
 # Optionally install orca for exporting static images
 ```
 
-<img src="./docs/results/compiled_wi_hard_vs_softwoods.png" alt="" />
-<img src="./docs/results/compiled_wi.png" alt="" />
+<img src="./old_demo/results/compiled_wi_hard_vs_softwoods.png" alt="" />
+<img src="./old_demo/results/compiled_wi.png" alt="" />
