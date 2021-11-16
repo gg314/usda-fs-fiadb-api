@@ -1,4 +1,4 @@
-[Demo of results](https://gg314.github.io/usda-fs-fiadb-api)
+[Demo of results](https://gg314.github.io/usda-fs-fiadb-api/demo/)
 
 ## Python USDA Forest Inventory and Analysis Database API Wrapper
 
